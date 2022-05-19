@@ -1,4 +1,4 @@
-package com.simplesteph.kafka;
+package com.simplesteph.kafka.producer;
 
 import org.apache.kafka.clients.producer.*;
 import org.apache.kafka.common.serialization.StringSerializer;
@@ -6,11 +6,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Properties;
+import java.util.concurrent.ExecutionException;
 
-public class ProducerDemoWithCallback {
+public class ProducerDemokeys {
 
-    public static void main(String[] args) {
-        Logger logger = LoggerFactory.getLogger(ProducerDemoWithCallback.class);
+    public static void main(String[] args) throws ExecutionException, InterruptedException {
+        Logger logger = LoggerFactory.getLogger(ProducerDemokeys.class);
         String bootstrapServer = "127.0.0.1:9092";
 
         //create producer properties
@@ -23,9 +24,14 @@ public class ProducerDemoWithCallback {
         KafkaProducer<String, String> producer = new KafkaProducer<>(properties);
 
         for (int i = 0; i < 10; i++) {
-            //create producer record
-            ProducerRecord<String, String> record = new ProducerRecord<>("first_topic", "hello " + String.valueOf(i));
 
+            String topic = "first_topic";
+            String key = "id_" + String.valueOf(i);
+            String value = "Hello world " + String.valueOf(i);
+            //create producer record
+            ProducerRecord<String, String> record = new ProducerRecord<>(topic, key, value);
+
+            logger.info("Key: " + key);
             //send data
             producer.send(record, new Callback() {
                 @Override
@@ -39,7 +45,7 @@ public class ProducerDemoWithCallback {
                     } else
                         logger.error("Error while producing.\n" + e);
                 }
-            });
+            }).get();
         }
         //flush data
         producer.flush();
