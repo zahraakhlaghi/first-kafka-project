@@ -1,4 +1,4 @@
-package com.simplesteph.kafka.producer;
+package com.simplesteph.kafka.basic.producer;
 
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;
